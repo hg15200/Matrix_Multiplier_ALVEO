@@ -1,0 +1,3 @@
+[console_scripts]
+Matrix_Multiplier_FPGA_script = Matrix_Multiplier_FPGA.Matrix_Multiplier_FPGA:main
+
