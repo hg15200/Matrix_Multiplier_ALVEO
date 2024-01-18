@@ -15,43 +15,31 @@ overlay_path = os.path.join(script_directory, 'Mat_HLS_2B.xclbin')
 
 print("Ruta completa al archivo Mat_HLS_2B.xclbin:", overlay_path)
 
-
 platform = glob.glob("/opt/xilinx/platforms/*/*.xpfm")[0]
 
-size = 1024
+size = 5000
 # Datos de entrada
 in1 = np.random.randint(low=0, high=100, size=(size, size), dtype='u4')
 in2 = np.random.randint(low=0, high=100, size=(size, size), dtype='u4')
-#in1 = 10
-#in2 = 200
-#in1_sw = np.full((size,size),10)
-#in2_sw = np.full((size,size),200)
-#out_sw = np.zeros((size, size), dtype='u4')
-#overlay_path = '/home/hector/IFIC_ALVEO/MatMul_py/Mat_HLS_2B/Mat_HLS_2B/overlays/Mat_HLS_2B.xclbin'
+
+in3 = 10
+in4 =200
+
 overlay_path = '../bin_HLS/Mat_HLS_2B.xclbin'
 
 matrix_multiplier = MatrixMultiplier(overlay_path, size, in1, in2)
-
-# Software Version
-# Measure execution time for software
-#start_time_sw = time.time()
-#out_sw = np.dot(in1_sw, in2_sw)
-#end_time_sw = time.time()
-#execution_time_sw = end_time_sw - start_time_sw
-
+matrix_multiplier_B = MatrixMultiplier(overlay_path, size, in3, in4)
 
 # Run hardware version
+result_hw_B, exec_time_hw_B = matrix_multiplier_B.run_hw()
 result_hw, exec_time_hw = matrix_multiplier.run_hw()
 print(f"In1: {in1}")
 print(f"In2: {in2}")
-#print(f"Resultado SW: {out_sw}")
 print(f"Resultado HW: {result_hw}")
 print(f"Tiempo de ejecución HW: {exec_time_hw} segundos")
-#print(f"Tiempo de ejecución SW: {execution_time_sw} segundos")
 
-# Obtener estadísticas de memoria
-mem_info = psutil.virtual_memory()
-# Imprimir memoria libre
-print(f"Memoria libre: {mem_info.available} bytes")
-
+print(f"In1: {in3}")
+print(f"In2: {in4}")
+print(f"Resultado HW: {result_hw_B}")
+print(f"Tiempo de ejecución HW: {exec_time_hw_B} segundos")
 

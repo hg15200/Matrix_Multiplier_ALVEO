@@ -3,8 +3,17 @@ import numpy as np
 import time
 
 class MatrixMultiplier:
-    def __init__(self, overlay_path, size, in1_data, in2_data):
-        self.overlay = pynq.Overlay(overlay_path)
+    overlay_path = None  # Variable de clase para almacenar overlay_path
+
+    @classmethod
+    def set_overlay_path(cls, path):
+        cls.overlay_path = path
+
+    def __init__(self, size, in1_data, in2_data):
+        if not MatrixMultiplier.overlay_path:
+            raise ValueError("overlay_path no ha sido configurado. Use set_overlay_path antes de crear una instancia de MatrixMultiplier.")
+        
+        self.overlay = pynq.Overlay(MatrixMultiplier.overlay_path)
         self.mmult = self.overlay.mmult_1
         self.size = size
 
@@ -12,7 +21,7 @@ class MatrixMultiplier:
         self.in2 = pynq.allocate((size, size), 'u4', target=self.overlay.bank1)
         self.out_hw = pynq.allocate((size, size), 'u4', target=self.overlay.bank2)
 
-        # Copy the input data to the allocated buffers
+        # Copia los datos de entrada a los buffers asignados
         self.in1[:] = in1_data
         self.in2[:] = in2_data
 
